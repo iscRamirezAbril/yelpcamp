@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const cities = require('./cities');
 const campground = require('./models/campground');
 
 // Mongo DB connection 
@@ -25,10 +24,9 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-app.get('/makecampground', async (req, res) => {
-    const camp = new campground({title: 'My Backyard', description: 'Cheap Camping'});
-    await camp.save();
-    res.send(camp);
+app.get('/campgrounds', async (req, res) => {
+    const campgrounds = await campground.find({});
+    res.render('campgrounds/index', { campgrounds });
 });
 
 app.listen(3000, () => {
