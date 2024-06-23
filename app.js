@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const cities = require('./cities');
 const campground = require('./models/campground');
 
 // Mongo DB connection 
