@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Campground Schema
-const campgroundSchema = new Schema({
+const CampgroundSchema = new Schema({
     title: String,
     price: String,
     description: String,
     location: String
 });
 
-// Exporting the Campground Schema
-module.exports = mongoose.model('Campground', campgroundSchema);
+module.exports = mongoose.model('Campground', CampgroundSchema);
