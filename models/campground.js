@@ -5,11 +5,30 @@ const Schema = mongoose.Schema;
 
 // |----------------| Campground Schema |----------------| //
 const CampgroundSchema = new Schema({
-    title: String,
-    image: String,
-    price: Number,
-    description: String,
-    location: String
+    title: {
+        type: String,
+        require: true
+    },
+
+    image: {
+        type: String,
+        require: true
+    },
+
+    price: {
+        type: Number,
+        require: true
+    },
+
+    description: {
+        type: String,
+        require: true
+    },
+
+    location: {
+        type: String,
+        require: true
+    }
 });
 // |----------------| Campground Schema |----------------| //
 

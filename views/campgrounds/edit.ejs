@@ -3,13 +3,16 @@
     <div class="row">
         <h1 class="text-center">Edit Campground</h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds/<%= campground._id  %>?_method=PUT" method="POST" novalidate class="validated-form">
+            <form action="/campgrounds/<%= campground._id  %>?_method=PUT" method="POST" class="validated-form">
     
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
                     <input type="text" id="title" name="campground[title]" class="form-control" value="<%= campground.title %>">
                     <div class="valid-feedback">
                         Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please, write a Campground name.
                     </div>
                 </div>
         
@@ -18,6 +21,9 @@
                     <input type="text" id="location" name="campground[location]" class="form-control" value="<%= campground.location %>">
                     <div class="valid-feedback">
                         Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please, write a location for the Campground.
                     </div>
                 </div>
     
@@ -31,6 +37,9 @@
                     <div class="valid-feedback">
                         Looks good!
                     </div>
+                    <div class="invalid-feedback">
+                        Please, assign a price.
+                    </div>
                 </div>
     
                 <div class="mb-3">
@@ -39,6 +48,9 @@
                     <div class="valid-feedback">
                         Looks good!
                     </div>
+                    <div class="invalid-feedback">
+                        Please, assign an image for the Campground.
+                    </div>
                 </div>
     
                 <div class="mb-3">
@@ -46,6 +58,9 @@
                     <textarea type="text" id="description" name="campground[description]" class="form-control"> <%= campground.description %> </textarea>
                     <div class="valid-feedback">
                         Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please, add a description.
                     </div>
                 </div>
     

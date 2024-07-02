@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const path = require('path');
 const methodOverride = require('method-override');
+const catchAsync = require('./utils/catchAsync');
 // |----------------| Require Libraries |----------------|//
 
 // Require Models
@@ -41,10 +42,10 @@ app.get('/', (req, res) => {
 });
 
 // === Campgrounds List Page (GET) === //
-app.get('/campgrounds', async (req, res) => {
+app.get('/campgrounds', catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', { campgrounds });
-});
+}));
 
 // === Register Campground Page === //
 app.get('/campgrounds/new', (req, res) => {
@@ -52,36 +53,41 @@ app.get('/campgrounds/new', (req, res) => {
 });
 
 // === Campgrounds List Page (POST) === //
-app.post('/campgrounds', async (req, res) => {
+app.post('/campgrounds', catchAsync(async (req, res, next) => {
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
-});
+}));
 
 // === Campground Details Page === //
-app.get('/campgrounds/:id', async (req, res,) => {
+app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id)
     res.render('campgrounds/show', { campground });
-});
+}));
 
 // === Campground Edit Page (GET) === //
-app.get('/campgrounds/:id/edit', async (req, res) => {
+app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id)
     res.render('campgrounds/edit', { campground });
-});
+}));
 
 // === Campground Edit Page (PUT) === //
-app.put('/campgrounds/:id', async (req, res) => {
+app.put('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
     res.redirect(`/campgrounds/${campground._id}`);
-});
+}));
 
 // === Delete Campground === //
-app.delete('/campgrounds/:id', async (req, res) => {
+app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
+}));
+
+// === Error Handler === //
+app.use((err, req, res, next) => {
+    res.send('OH NO! SOMETHING WENT WRONG :(');
 });
 // |------------------| Website Routes |------------------| //
 
