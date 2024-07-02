@@ -90,15 +90,15 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
 
 // === 404 Page === //
 app.all('*', (req, res, next) => {
-    next(new ExpressError('Page not Found', 404));
-});
+    next(new ExpressError('Page Not Found', 404))
+})
 
 // === Error Handler === //
 app.use((err, req, res, next) => {
-    const { statusCode = 500, message = 'Something went wrong' } = err;
-    res.status(statusCode).send(message);
-    res.send('OH NO! SOMETHING WENT WRONG :(');
-});
+    const { statusCode = 500 } = err;
+    if (!err.message) err.message = 'Oh No, Something Went Wrong!'
+    res.status(statusCode).render('error', { err })
+})
 // |------------------| Website Routes |------------------| //
 
 // Website Port
