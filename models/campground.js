@@ -1,5 +1,6 @@
 // |----------------| Require Libraries |----------------| //
 const mongoose = require('mongoose');
+const Review = require('./review')
 const Schema = mongoose.Schema;
 // |----------------| Require Libraries |----------------| //
 
@@ -17,6 +18,17 @@ const CampgroundSchema = new Schema({
     ]
 });
 // |----------------| Campground Schema |----------------| //
+
+// === Campground Middleware Remove function === //
+CampgroundSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await Review.deleteMany({
+            _id: {
+                $in: doc.reviews
+            }
+        })
+    }
+});
 
 // === Campground Schema Export === //
 module.exports = mongoose.model('Campground', CampgroundSchema);
