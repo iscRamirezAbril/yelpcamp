@@ -2,7 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const { campgroundSchema } = require('./schemas');
+const { campgroundSchema, reviewSchema } = require('./schemas');
 const path = require('path');
 const methodOverride = require('method-override');
 const catchAsync = require('./utils/catchAsync');
@@ -55,16 +55,29 @@ app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new');
 });
 
-// === Middleware function === //
-const validateCampground = (req, res, next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-};
+    // |----------------| Middleware functions |----------------| //
+    // === Middleware Campground function === //
+    const validateCampground = (req, res, next) => {
+        const { error } = campgroundSchema.validate(req.body);
+        if(error) {
+            const msg = error.details.map(el => el.message).join(',');
+            throw new ExpressError(msg, 400);
+        } else {
+            next();
+        }
+    };
+
+    // === Middleware Review function === //
+    const validateReview = (req, res, next) => {
+        const { error } = reviewSchema.validate(req.body);
+        if(error) {
+            const msg = error.details.map(el => el.message).join(',');
+            throw new ExpressError(msg, 400);
+        } else {
+            next();
+        }
+    };
+    // |----------------| Middleware functions |----------------| //
 
 // === Campgrounds List Page (POST) === //
 app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) => {
@@ -100,7 +113,8 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     res.redirect('/campgrounds');
 }));
 
-app.post('/campgrounds/:id/reviews', catchAsync(async (req, res) => {
+// === Reviews List for Campgrounds === //
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
     campground.reviews.push(review);
