@@ -10,10 +10,7 @@ const reviews = require('./routes/reviews');
 // |----------------| Required Libraries |---------------| //
 
 // |---------------| Mongo DB connection |---------------| //
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
-    useNewURLParser: true,
-    useUnifiedTopology: true
-});
+mongoose.connect('mongodb://localhost:27017/yelp-camp');
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
@@ -25,14 +22,15 @@ db.once("open" , () => {
 // Express Call
 const app = express();
 
-// |---------------| Directories & Engines|---------------| //
+// |---------------| Directories & Engines |--------------| //
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-// |-------------------| Directories |-------------------| //
+// |---------------| Directories & Engines |--------------| //
 
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // |------------------| Website Routes |------------------| //
 // === Campgrounds Routes === //
