@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const path = require('path');
 const session = require('express-session');
+const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const ExpressError = require('./utils/ExpressError');
 const campgrounds = require('./routes/campgrounds');
@@ -32,6 +33,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
 
 // |--------------| Sessions Configurations |--------------| //
 const sessionConfig = {
@@ -47,6 +49,15 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 // |--------------| Sessions Configurations |--------------| //
+
+    // |----------------| Middleware functions |----------------| //
+        // === Flash Middleware function === //
+        app.use((req, res, next) => {
+            res.locals.success = req.flash('success');
+            res.locals.error = req.flash('error');
+            next();
+        });
+    // |----------------| Middleware functions |----------------| //
 
 // |------------------| Website Routes |------------------| //
 // === Campgrounds Routes === //
