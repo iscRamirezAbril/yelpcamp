@@ -1,4 +1,4 @@
-// |----------------| Require Libraries |----------------| //
+// |----------------| Required Libraries |---------------| //
 const express = require('express');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
@@ -7,11 +7,8 @@ const path = require('path');
 const methodOverride = require('method-override');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
-// |----------------| Require Libraries |----------------|//
-
-// Require Models
-const Campground = require('./models/campground');
-const Review = require('./models/review');
+const campgrounds = require('./routes/campgrounds');
+// |----------------| Required Libraries |---------------| //
 
 // |---------------| Mongo DB connection |---------------| //
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -39,34 +36,15 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 
 // |------------------| Website Routes |------------------| //
+// === Campgrounds Routes === //
+app.use('/campgrounds', campgrounds);
+
 // === Home Page === //
 app.get('/', (req, res) => {
     res.render('home');
 });
 
-// === Campgrounds List Page (GET) === //
-app.get('/campgrounds', catchAsync(async (req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds });
-}));
-
-// === Register Campground Page === //
-app.get('/campgrounds/new', (req, res) => {
-    res.render('campgrounds/new');
-});
-
     // |----------------| Middleware functions |----------------| //
-    // === Middleware Campground function === //
-    const validateCampground = (req, res, next) => {
-        const { error } = campgroundSchema.validate(req.body);
-        if(error) {
-            const msg = error.details.map(el => el.message).join(',');
-            throw new ExpressError(msg, 400);
-        } else {
-            next();
-        }
-    };
-
     // === Middleware Review function === //
     const validateReview = (req, res, next) => {
         const { error } = reviewSchema.validate(req.body);
@@ -78,40 +56,6 @@ app.get('/campgrounds/new', (req, res) => {
         }
     };
     // |----------------| Middleware functions |----------------| //
-
-// === Campgrounds List Page (POST) === //
-app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) => {
-    // if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
-    const campground = new Campground(req.body.campground);
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
-}));
-
-// === Campground Details Page === //
-app.get('/campgrounds/:id', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews');
-    res.render('campgrounds/show', { campground });
-}));
-
-// === Campground Edit Page (GET) === //
-app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id)
-    res.render('campgrounds/edit', { campground });
-}));
-
-// === Campground Edit Page (PUT) === //
-app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
-    res.redirect(`/campgrounds/${campground._id}`);
-}));
-
-// === Delete Campground === //
-app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id);
-    res.redirect('/campgrounds');
-}));
 
 // === Reviews List for Campgrounds === //
 app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
