@@ -7,9 +7,16 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const ExpressError = require('./utils/ExpressError');
-const campgrounds = require('./routes/campgrounds');
-const reviews = require('./routes/reviews');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 // |----------------| Required Libraries |---------------| //
+
+// |------------------| Required Routes |----------------| //
+const campgroundsRoutes = require('./routes/campgrounds');
+const reviewsRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+// |------------------| Required Routes |----------------| //
 
 // |---------------| Mongo DB connection |---------------| //
 mongoose.connect('mongodb://localhost:27017/yelp-camp');
@@ -30,12 +37,13 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 // |---------------| Directories & Engines |--------------| //
 
+// |------------------| Uses for the app |----------------| //
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(flash());
+// |------------------| Uses for the app |----------------| //
 
-// |--------------| Sessions Configurations |--------------| //
+// |--------------| Sessions Configurations |-------------| //
 const sessionConfig = {
     secret: 'thisshouldbeabettersecret',
     resave: false,
@@ -46,9 +54,17 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7 // The max time that the cookie is going to be "active" is for "ONE WEEK"
     }
 };
-
 app.use(session(sessionConfig));
+app.use(flash());
 // |--------------| Sessions Configurations |--------------| //
+
+// |---------------| Passport Configurations |-------------| //
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+// |--------------| Passport Configurations |--------------| //
 
     // |----------------| Middleware functions |----------------| //
         // === Flash Middleware function === //
@@ -61,10 +77,13 @@ app.use(session(sessionConfig));
 
 // |------------------| Website Routes |------------------| //
 // === Campgrounds Routes === //
-app.use('/campgrounds', campgrounds);
+app.use('/campgrounds', campgroundsRoutes);
 
 // === Reviews Routes === //
-app.use('/campgrounds/:id/reviews', reviews);
+app.use('/campgrounds/:id/reviews', reviewsRoutes);
+
+// === Users Routes === //
+app.use('/', userRoutes);
 
 // === Home Page === //
 app.get('/', (req, res) => {
