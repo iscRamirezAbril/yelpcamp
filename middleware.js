@@ -5,12 +5,13 @@ const { campgroundSchema, reviewSchema } = require('./schemas');
 // |----------------| Middleware functions |----------------| //
     // === Middleware Logged In function === //
     module.exports.isLoggedIn = (req, res, next) => {
-        if(!req.isAuthenticated()) {
+        if (!req.isAuthenticated()) {
+            req.session.returnTo = req.originalUrl; // add this line
             req.flash('error', 'You must be logged in!');
             return res.redirect('/login');
         }
         next();
-    };
+    }
 
     // === Middleware Review function === //
     module.exports.validateReview = (req, res, next) => {
@@ -33,4 +34,12 @@ const { campgroundSchema, reviewSchema } = require('./schemas');
             next();
         }
     };
+
+    // === Middleware Return Session function === //
+    module.exports.storeReturnTo = (req, res, next) => {
+        if (req.session.returnTo) {
+            res.locals.returnTo = req.session.returnTo;
+        }
+        next();
+    }
 // |----------------| Middleware functions |----------------| //
