@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
+const passport = require('passport');
 // |---------------| Required Libraries |----------------| //
 
 // |-----------------| Required Models |-----------------| //
@@ -26,5 +27,16 @@ router.post('/register', catchAsync(async (req, res) => {
         res.redirect('/register');
     }
 }));
+
+// === Login user page (GET) === //
+router.get('/login', (req, res) => {
+    res.render('users/login');
+});
+
+// === Login user page (POST) === //
+router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }) , async (req, res) => {
+    req.flash('success', 'Welcome back!');
+    res.redirect('/campgrounds');
+});
 
 module.exports = router; // === Exporting routes from this file === //
