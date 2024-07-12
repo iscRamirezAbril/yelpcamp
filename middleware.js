@@ -1,6 +1,12 @@
-// |----------------| Required Libraries |---------------| //
+// |-----------------| Required Libraries |-----------------| //
 const { campgroundSchema, reviewSchema } = require('./schemas');
-// |----------------| Required Libraries |---------------| //
+const ExpressError = require('./utils/ExpressError');
+// |-----------------| Required Libraries |-----------------| //
+
+// |------------------| Required Models |-------------------| //
+const Campground = require('./models/campground');
+const Review = require('./models/review');
+// |------------------| Required Models |-------------------| //
 
 // |----------------| Middleware functions |----------------| //
     // === Middleware Logged In function === //
@@ -11,7 +17,7 @@ const { campgroundSchema, reviewSchema } = require('./schemas');
             return res.redirect('/login');
         }
         next();
-    }
+    };
 
     // === Middleware Review function === //
     module.exports.validateReview = (req, res, next) => {
@@ -41,5 +47,29 @@ const { campgroundSchema, reviewSchema } = require('./schemas');
             res.locals.returnTo = req.session.returnTo;
         }
         next();
-    }
+    };
+
+    // === Middleware "is Author?" campground function === //
+    module.exports.isAuthor = async (req, res, next) => {
+        const { id } = req.params;
+        const campground = await Campground.findById(id);
+        if (!campground.author.equals(req.user._id)) {
+            req.flash('error', 'You dont have permission to do that!');
+            return res.redirect(`/campgrounds/${id}`);
+        } else {
+            next();
+        }
+    };
+
+    // === Middleware "is Author?" review function === //
+    module.exports.isReviewAuthor = async (req, res, next) => {
+        const { id, reviewId } = req.params;
+        const review = await Review.findById(reviewId);
+        if (!review.author.equals(req.user._id)) {
+            req.flash('error', 'You dont have permission to do that!');
+            return res.redirect(`/campgrounds/${id}`);
+        } else {
+            next();
+        }
+    };
 // |----------------| Middleware functions |----------------| //
