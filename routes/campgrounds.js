@@ -4,12 +4,19 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn, validateCampground, isAuthor } = require('../middleware');
 const campgrounds = require('../controllers/campgrounds');
+const multer  = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
 // |---------------| Required Libraries |----------------| //
 
 // === Campgrounds "/" routes === //
 router.route('/')
     .get(catchAsync(campgrounds.index)) // === Campgrounds List Page (GET) === //
-    .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground)) // === Campgrounds List / Register Page (POST) === //
+/*     .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground)) // === Campgrounds List / Register Page (POST) === // */
+    .post(upload.array('image'), (req, res) => {
+        console.log(req.body, req.files);
+        res.send("IT WORKED!!");
+    });
 
 router.get('/new', isLoggedIn, campgrounds.renderNewForm); // === Register Campground Page === //
 
@@ -20,5 +27,10 @@ router.route('/:id')
     .delete(isLoggedIn, isAuthor, catchAsync(campgrounds.deleteCampground)) // === Delete Campground === //
 
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(campgrounds.renderEditForm)); // === Campground Edit Page (GET) === //
+
+router.get('/time', (req, res) => {
+    const serverTime = new Date().toISOString();
+    res.send(`Server time is: ${serverTime}`);
+});
 
 module.exports = router; // === Exporting routes from this file === //
