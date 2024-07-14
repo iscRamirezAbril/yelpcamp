@@ -4,10 +4,21 @@ const Review = require('./review')
 const Schema = mongoose.Schema;
 // |----------------| Require Libraries |----------------| //
 
+// |-------------------| Image Schema |------------------| //
+const ImageSchema = new Schema ({
+    url: String,
+    filename: String
+});
+// |-------------------| Image Schema |------------------| //
+
+ImageSchema.virtual('thumbnail').get(function() {
+    return this.url.replace('/upload', '/upload/w_250');
+});
+
 // |----------------| Campground Schema |----------------| //
 const CampgroundSchema = new Schema({
     title: String,
-    image: String,
+    images: [ImageSchema],
     price: Number,
     description: String,
     location: String,
