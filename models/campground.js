@@ -47,11 +47,9 @@ const CampgroundSchema = new Schema({
 }, opts);
 // |----------------| Campground Schema |----------------| //
 
-// === Campground Images properties function === //
+// === Campground Cluster Map PopUp properties function === //
 CampgroundSchema.virtual('properties.popUpMarkup').get(function () {
-    return `
-    <strong><a href="/campgrounds/${this._id}">${this.title}</a><strong>
-    <p>${this.description.substring(0, 20)}...</p>`
+    return `<strong><a href="/campgrounds/${this._id}">${this.title}</a><strong> <p>${this.location.substring(0, 20)}...</p>`
 });
 
 // === Campground Middleware Remove function === //
