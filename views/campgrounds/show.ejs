@@ -1,8 +1,12 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/stylesheets/stars.css">
 
+<div id="map" style="width: 50%; height: 300px"></div>
+
 <div class="row">
     <div class="col-6">
+
+      <div id="map"></div>
 
       <div id="campgroundCarousel" class="carousel slide carousel-fade">
         <div class="carousel-inner">
@@ -34,13 +38,10 @@
                 <p class="card-text"><%= campground.description %></p>
               </div>
 
-              <div class="card-body">
-                <li class="list-group-item text-muted"><%= campground.location %></li>
-                <li class="list-group-item">Submitted by <%= campground.author.username %></li>
-              </div>
-              
               <ul class="list-group list-group-flush">
-                <li class="list-group-item">$<%= campground.price %>/night</li>
+                <li class="list-group-item text-muted"><%= campground.location%></li>
+                <li class="list-group-item">Submitted by <%= campground.author.username%></li>
+                <li class="list-group-item">$<%= campground.price%>/night</li>
               </ul>
 
               <% if (currentUser && campground.author.equals(currentUser._id)) { %>
@@ -120,3 +121,10 @@
     </div>
 
 </div>
+
+<script>
+  const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+  const campground = <%- JSON.stringify(campground) %>
+</script>
+
+<script src="/javascripts/showPageMap.js"></script>
