@@ -1,71 +1,84 @@
 <% layout('layouts/boilerplate') %>
 
-<div class="row">
-    <h1 class="text-center mb-5">New Campground</h1>
-    <div class="col-6 offset-3">
-        <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+<link rel="stylesheet" href="/stylesheets/new_edit.css">
+
+<div class="container justify-content-center align-items-center">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 col-xl-6 offset-xl-3">
+            <div class="card shadow bg-white bg-opacity-10">
+
+                <div class="card-body">
+                    <h1 class="card-title mb-4">New Campground</h1>
+
+                    <form action="/campgrounds" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="title" name="campground[title]" required placeholder="Title">
+                            <label for="title" class="form-label">Title</label>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please, write a Campground name.
+                            </div>
+                        </div>
+                
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="location" name="campground[location]" required placeholder="Location">
+                            <label for="location" class="form-label">Location</label>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please, write a location for the Campground.
+                            </div>
+                        </div>
             
-            <div class="form-floating mb-4">
-                <input type="text" class="form-control" id="title" name="campground[title]" required placeholder="Title">
-                <label for="title" class="form-label">Title</label>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-                <div class="invalid-feedback">
-                    Please, write a Campground name.
-                </div>
-            </div>
-    
-            <div class="form-floating mb-4">
-                <input type="text" class="form-control" id="location" name="campground[location]" required placeholder="Location">
-                <label for="location" class="form-label">Location</label>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-                <div class="invalid-feedback">
-                    Please, write a location for the Campground.
-                </div>
-            </div>
+                        <div class="input-group mb-4">
+                            <span class="input-group-text">$</span>
+                            <div class="form-floating">
+                              <input type="text" class="form-control" id="price" name="campground[price]" required placeholder="Username">
+                              <label class="form-label" for="price">Price</label>
+                            </div>
+                            <span class="input-group-text">.00</span>
+            
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please, assign a price.
+                            </div>
+                        </div>
+            
+                        <div class="mb-4">
+                            <label for="images" class="form-label">Add images</label>
+                            <input class="form-control custom-file" type="file" id="images" name="image" multiple>
+                        </div>
+            
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="Leave a comment here" id="description" style="height: 150px" name="campground[description]" required></textarea>
+                                <label class="form-label" for="description">Description</label>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please, add a description.
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="d-grid gap-2 mb-3">
+                            <button class="btn btn-success">Save</button>
+                        </div>
+                    </form>
 
-            <div class="input-group mb-4">
-                <span class="input-group-text">$</span>
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="price" name="campground[price]" required placeholder="Username">
-                  <label for="price">Price</label>
-                </div>
-                <span class="input-group-text">.00</span>
-
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-                <div class="invalid-feedback">
-                    Please, assign a price.
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label for="images" class="form-label">Add images</label>
-                <input class="form-control custom-file" type="file" id="images" name="image" multiple>
-            </div>
-
-            <div class="mb-4">
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="description" style="height: 150px" name="campground[description]" required></textarea>
-                    <label for="description">Description</label>
-                    <div class="valid-feedback">
-                        Looks good!
+                    <div class="d-grid gap-2 mb-3">
+                        <a class="btn btn-danger btn-block" href="/campgrounds">Cancel</a>
                     </div>
-                    <div class="invalid-feedback">
-                        Please, add a description.
-                    </div>
+
                 </div>
-            </div>
 
-            <div class="mb-4">
-                <button class="btn btn-success">Save</button>
             </div>
-
-        </form>
-        <a class="btn btn-outline-danger" href="/campgrounds">Cancel</a>
+        </div>
     </div>
 </div>
