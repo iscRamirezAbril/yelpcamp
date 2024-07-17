@@ -14,6 +14,7 @@ const ExpressError = require('./utils/ExpressError');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 // |-----------------| Required Mondules |---------------| //
 
@@ -46,16 +47,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(mongoSanitize);
+app.use(mongoSanitize({
+    replaceWith: '_'
+}));
+app.use(helmet());
 // |------------------| Uses for the app |----------------| //
 
 // |--------------| Sessions Configurations |-------------| //
 const sessionConfig = {
+    name: 'session',
     secret: 'thisshouldbeabettersecret',
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
+        // secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // The session cookie "active time" is of "ONE WEEK"
         maxAge: 1000 * 60 * 60 * 24 * 7 // The max time that the cookie is going to be "active" is for "ONE WEEK"
     }

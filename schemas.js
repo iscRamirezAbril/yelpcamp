@@ -1,13 +1,38 @@
-const Joi = require('joi');
+// |-----------------| Required Modules |---------------| //
+const BaseJoi = require('joi');
+const sanitizeHtml = require('sanitize-html');
+// |-----------------| Required Modules |---------------| //
+
+// === Joi Extension for "Sanitize-html" module === //
+const extension = (joi) => ({
+    type: 'string',
+    base: joi.string(),
+    messages: {
+        'string.escapeHTML': '{{#label}} must not include HTML!'
+    },
+    rules: {
+        escapeHTML: {
+            validate(value, helpers) {
+                const clean = sanitizeHtml(value, {
+                    allowedTags: [],
+                    allowedAttributes: {},
+                });
+                if (clean !== value) return helpers.error('string.escapeHTML', { value })
+                return clean;
+            }
+        }
+    }
+});
+
+const Joi = BaseJoi.extend(extension); // === Joi Schema with "Sanitize-htm" module included === //
 
 // === Campground Joi Schema === //
 module.exports.campgroundSchema = Joi.object({
     campground: Joi.object({
-        title: Joi.string().required(),
-        //image: Joi.string().required(),
+        title: Joi.string().required().escapeHTML(),
         price: Joi.number().required().min(10),
-        description: Joi.string().required(),
-        location: Joi.string().required()
+        description: Joi.string().required().escapeHTML(),
+        location: Joi.string().required().escapeHTML()
     }).required(),
     deleteImages: Joi.array()
 });
@@ -16,6 +41,6 @@ module.exports.campgroundSchema = Joi.object({
 module.exports.reviewSchema = Joi.object({
     review: Joi.object({
         rating: Joi.number().required().min(1).max(5),
-        body: Joi.string().required()
+        body: Joi.string().required().escapeHTML()
     }).required()
 });
