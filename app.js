@@ -58,6 +58,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize({
     replaceWith: '_'
 }));
+
 app.use(helmet());
 // |------------------| Uses for the app |----------------| //
 
