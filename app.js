@@ -1,4 +1,4 @@
-// |----------------| Required Libraries |---------------| //
+// |-----------------| Required Modules |---------------| //
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 };
@@ -14,7 +14,8 @@ const ExpressError = require('./utils/ExpressError');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
-// |----------------| Required Libraries |---------------| //
+const mongoSanitize = require('express-mongo-sanitize');
+// |-----------------| Required Mondules |---------------| //
 
 // |------------------| Required Routes |----------------| //
 const campgroundsRoutes = require('./routes/campgrounds');
@@ -45,6 +46,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(mongoSanitize);
 // |------------------| Uses for the app |----------------| //
 
 // |--------------| Sessions Configurations |-------------| //
