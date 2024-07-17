@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/stylesheets/stars.css">
 
 <div class="row">
-    <div class="col-6">
+    <div class="col-6 mb-5">
 
       <div id="campgroundCarousel" class="carousel slide carousel-fade">
         <div class="carousel-inner">
@@ -57,17 +57,18 @@
 
           <div class="d-grid gap-2 mb-3">
             <a class="btn btn-warning" href="/campgrounds">Campground List</a>
-        </div>
+          </div>
+
+          <h2>Map:</h2>
+          <div id="map"></div>
 
     </div>
 
     <div class="col-6">
-      
-      <div id="map"></div>
 
       <% if (currentUser) { %>
 
-      <h2 class="my-4">Leave a review:</h2>
+      <h2>Leave a review:</h2>
 
       <form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-3 validated-form" novalidate>
 
@@ -86,7 +87,7 @@
         </fieldset>
 
         <div class="mb-3">
-          <label class="form-label" for="body">Leave a comment:</label>
+          <label class="form-label" for="body">Comment:</label>
           <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
           <div class="valid-feedback">
             Looks good!
