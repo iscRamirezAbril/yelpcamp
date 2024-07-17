@@ -17,7 +17,7 @@ const User = require('./models/user');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const MongoStore = require('connect-mongo');
-// const dbUrl = process.env.DB_URL;
+const dbUrl = process.env.DB_URL;
 // |-----------------| Required Mondules |---------------| //
 
 // |------------------| Required Routes |----------------| //
@@ -30,7 +30,7 @@ const { func } = require('joi');
 // === Local Database === //
 /* mongodb://localhost:27017/yelp-camp */
 
-const dbUrl = 'mongodb://localhost:27017/yelp-camp';
+// const dbUrl = 'mongodb://localhost:27017/yelp-camp';
 
 // |---------------| Mongo DB connection |---------------| //
 mongoose.connect(dbUrl);
