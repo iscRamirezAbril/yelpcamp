@@ -16,16 +16,24 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
+const MongoStore = require('connect-mongo');
+// const dbUrl = process.env.DB_URL;
 // |-----------------| Required Mondules |---------------| //
 
 // |------------------| Required Routes |----------------| //
 const campgroundsRoutes = require('./routes/campgrounds');
 const reviewsRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
+const { func } = require('joi');
 // |------------------| Required Routes |----------------| //
 
+// === Local Database === //
+/* mongodb://localhost:27017/yelp-camp */
+
+const dbUrl = 'mongodb://localhost:27017/yelp-camp';
+
 // |---------------| Mongo DB connection |---------------| //
-mongoose.connect('mongodb://localhost:27017/yelp-camp');
+mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
@@ -34,7 +42,7 @@ db.once("open" , () => {
 });
 // |---------------| Mongo DB connection |---------------| //
 
-// Express Call
+// === Express Call === //
 const app = express();
 
 // |---------------| Directories & Engines |--------------| //
@@ -53,6 +61,7 @@ app.use(mongoSanitize({
 app.use(helmet());
 // |------------------| Uses for the app |----------------| //
 
+// |-------------------| Securiry Policy |----------------| //
 const scriptSrcUrls = [
     "https://stackpath.bootstrapcdn.com/",
     "https://kit.fontawesome.com/",
@@ -95,9 +104,23 @@ app.use(
         },
     })
 );
+// |-------------------| Securiry Policy |----------------| //
 
 // |--------------| Sessions Configurations |-------------| //
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'thisshouldbeabettersecret!'
+    }
+});
+
+store.on("error", function(e) {
+    console.log("SESSION STORE ERROR", e);
+})
+
 const sessionConfig = {
+    store,
     name: 'session',
     secret: 'thisshouldbeabettersecret',
     resave: false,
